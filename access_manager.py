@@ -1,13 +1,16 @@
 from datetime import datetime, timedelta
+import time
+import os
+import constants
 
 allowed_tokens = {}
-files_locations = {}
+audio_files = {}
 
 
 def add_token(token, file):
-    expiry_date = datetime.now() + timedelta(minutes=5)
+    expiry_date = datetime.now() + timedelta(seconds=30)
     allowed_tokens[token] = expiry_date
-    files_locations[token] = file
+    audio_files[token] = file
 
 
 def has_access(token):
@@ -19,8 +22,34 @@ def is_valid(token):
 
 
 def file_exists(token):
-    return token in files_locations
+    return token in audio_files
 
 
 def get_audio_file(token):
-    return files_locations[token]
+    return audio_files[token]
+
+
+def remove_expired_tokens():
+    expired_tokens = []
+    files_to_delete = []
+    for token in allowed_tokens:
+        if not is_valid(token):
+            expired_tokens.append(token)
+            files_to_delete.append(audio_files.pop(token))
+
+    for expired in expired_tokens:
+        del allowed_tokens[expired]
+
+    return files_to_delete
+
+
+def delete_expired_files(files):
+    for file in files:
+        os.remove(constants.DOWNLOADS_DIRECTORY + file)
+
+
+def manage_tokens():
+    while True:
+        files = remove_expired_tokens()
+        delete_expired_files(files)
+        time.sleep(1)

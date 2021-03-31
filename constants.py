@@ -1,4 +1,7 @@
-DOWNLOADS_PATH = 'downloads/'
+import os
+ROOT_DIRECTORY = os.path.dirname(os.path.abspath(__file__)) + '/'
+DOWNLOADS_DIRECTORY = 'downloads/'
+ABS_DOWNLOADS_PATH = ROOT_DIRECTORY + DOWNLOADS_DIRECTORY
 
 # HTTP CODES
 REQUEST_TIMEOUT = 408
