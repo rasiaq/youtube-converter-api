@@ -1,8 +1,8 @@
 import pytube
 import secrets
 import threading
-from constants import *
 import access_manager
+from constants import *
 from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__)
@@ -12,6 +12,7 @@ app = Flask(__name__)
 def download_audio():
     # TODO add format changing to .mp3
     """
+    Requires 'url' param in query string.
     Downloads audio track from given url and saves it to specified directory in .mp4 format
     :return: previously generated access token
     """
@@ -26,6 +27,7 @@ def download_audio():
 @app.route('/download', methods=['GET', 'POST'])
 def get_audio():
     """
+    Requires 'token' param in query string
     After checking all conditions related to given token, returns audio file associated with it
     :return: audio file associated with specified token.
     If FileNotFoundError is caught, then json response with error message

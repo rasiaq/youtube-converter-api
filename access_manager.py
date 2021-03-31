@@ -1,7 +1,7 @@
-from datetime import datetime, timedelta
 import time
 import os
-import constants
+from datetime import datetime, timedelta
+from constants import EXPIRY_TIME_MINUTES, DOWNLOADS_DIRECTORY
 
 allowed_tokens = {}
 audio_files = {}
@@ -14,7 +14,7 @@ def add_token(token, file):
     :param file: audio file name
     :return:
     """
-    expiry_date = datetime.now() + timedelta(minutes=constants.EXPIRY_TIME_MINUTES)
+    expiry_date = datetime.now() + timedelta(minutes=EXPIRY_TIME_MINUTES)
     allowed_tokens[token] = expiry_date
     audio_files[token] = file
 
@@ -57,9 +57,9 @@ def get_audio_file(token):
 
 def remove_expired_tokens():
     """
-    Adds expired token to expired_tokens array, then removes them.
-    Pops file names to array, which are suppose to be deleted
-    :return: array of file names to be deleted
+    Adds expired token to expired_tokens list, then removes them.
+    Pops file names to list, which are suppose to be deleted
+    :return: list of file names to be deleted
     """
     expired_tokens = []
     files_to_delete = []
@@ -81,7 +81,10 @@ def delete_expired_files(files):
     :return:
     """
     for file in files:
-        os.remove(constants.DOWNLOADS_DIRECTORY + file)
+        try:
+            os.remove(DOWNLOADS_DIRECTORY + file)
+        except FileNotFoundError:
+            print('Error occurred while deleting a file')
 
 
 def manage_tokens():
